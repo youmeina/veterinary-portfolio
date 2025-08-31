@@ -54,63 +54,86 @@ function getTagStyle(tag: string): React.CSSProperties {
 }
 // =================================
 
-export default function CaseStudiesIndex(): JSX.Element {
+// 小类型约束，便于在本文件做空值处理（不需要改 data 文件）
+type StudyItem = {
+  slug: string;
+  title: string;
+  summary?: string;
+  tags?: string[];
+};
+
+export default function CaseStudiesIndex() {
+  const items: StudyItem[] = Array.isArray(caseStudies) ? (caseStudies as any) : [];
+
   return (
     <main style={{ maxWidth: 960, margin: "40px auto", padding: "0 16px" }}>
       <h1 style={{ marginBottom: 8, color: "#7c3aed" }}>Case Studies</h1>
       <p style={{ color: "#555", marginBottom: 24 }}>
-      Clinical, lab, and fieldwork — documented clearly, handled gently.
+        Clinical, lab, and fieldwork — documented clearly, handled gently.
       </p>
 
+      {!items.length ? (
+        <p style={{ color: "#6b7280" }}>No case studies yet. Please check back soon.</p>
+      ) : null}
+
       <div
+        aria-label="case grid"
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
           gap: 16,
         }}
       >
-        {caseStudies.map((cs) => (
-          <article
-            key={cs.slug}
-            style={{
-              border: "1px solid #eee",
-              borderRadius: 12,
-              background: "#fff",
-              padding: "16px",
-            }}
-          >
-            <Link
-              href={`/case-studies/${cs.slug}`}
-              style={{ textDecoration: "none", color: "inherit" }}
+        {items.map((cs) => {
+          const tags = Array.isArray(cs.tags) ? cs.tags : [];
+          return (
+            <article
+              key={cs.slug || cs.title}
+              style={{
+                border: "1px solid #eee",
+                borderRadius: 12,
+                background: "#fff",
+                padding: "16px",
+              }}
             >
-              <h3 style={{ margin: "6px 0 8px" }}>{cs.title}</h3>
-              <p style={{ margin: 0, color: "#666" }}>{cs.summary}</p>
-
-              <div
-                style={{
-                  marginTop: 10,
-                  display: "flex",
-                  gap: 8,
-                  flexWrap: "wrap",
-                }}
+              <Link
+                href={`/case-studies/${cs.slug}`}
+                style={{ textDecoration: "none", color: "inherit", display: "block" }}
               >
-                {cs.tags.map((t) => (
-                  <span
-                    key={t}
+                <h3 style={{ margin: "6px 0 8px" }}>{cs.title}</h3>
+
+                {cs.summary ? (
+                  <p style={{ margin: 0, color: "#666" }}>{cs.summary}</p>
+                ) : null}
+
+                {tags.length ? (
+                  <div
                     style={{
-                      fontSize: 12,
-                      padding: "2px 8px",
-                      borderRadius: 999,
-                      ...getTagStyle(t),
+                      marginTop: 10,
+                      display: "flex",
+                      gap: 8,
+                      flexWrap: "wrap",
                     }}
                   >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </Link>
-          </article>
-        ))}
+                    {tags.map((t) => (
+                      <span
+                        key={t}
+                        style={{
+                          fontSize: 12,
+                          padding: "2px 8px",
+                          borderRadius: 999,
+                          ...getTagStyle(t),
+                        }}
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+              </Link>
+            </article>
+          );
+        })}
       </div>
     </main>
   );

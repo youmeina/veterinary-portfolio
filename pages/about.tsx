@@ -3,7 +3,7 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-const PROFILE_SRC = "/profile/meina.jpg"; // public/profile/meina.jpg
+const PROFILE_SRC = "/profile/meina.jpg"; // 请把图片放在 public/profile/meina.jpg
 
 // 生活照（把图片放到 public/profile/gallery/ 下）
 const LIFE_PHOTOS = [
@@ -13,7 +13,7 @@ const LIFE_PHOTOS = [
   { src: "/profile/gallery/life-4.jpg", alt: "Daily moment 4", note: "" },
 ];
 
-export default function About(): JSX.Element {
+export default function About() {
   return (
     <main style={{ maxWidth: 820, margin: "40px auto", padding: "0 16px" }}>
       {/* 顶部：标题 + 圆形头像 */}
@@ -159,7 +159,7 @@ export default function About(): JSX.Element {
         <span>© 2025 You Meina</span>
         <span>•</span>
         <a href="mailto:youmeina2025@163.com" style={{ color: "#7c3aed", textDecoration: "none" }}>
-        youmeina2025@163.com
+          youmeina2025@163.com
         </a>
       </footer>
     </main>

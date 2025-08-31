@@ -1,5 +1,6 @@
 // pages/case-studies/[slug].tsx
-import { useRouter } from "next/router";
+import * as React from "react";
+import type { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { caseStudies } from "../../data/caseStudies";
@@ -12,7 +13,7 @@ type Block = ParagraphBlock | ImageBlock | HeadingBlock;
 // 统一控制文章内图片的最大显示宽度（像素）
 const MAX_IMG_WIDTH = 560;
 
-/** ===== Tag colors (与列表页一致，可按需调整/扩展) ===== */
+/** ===== Tag colors ===== */
 const PALETTE = {
   purple: { bg: "#F3E8FF", text: "#6D28D9", border: "#E9D5FF" },
   indigo: { bg: "#E0E7FF", text: "#3730A3", border: "#C7D2FE" },
@@ -61,35 +62,48 @@ function getTagStyle(tag: string) {
   const c = PALETTE[key];
   return { background: c.bg, color: c.text, border: `1px solid ${c.border}` };
 }
-/** ====================================================== */
 
-export default function CaseStudyDetail() {
-  const router = useRouter();
-  const slug = typeof router.query.slug === "string" ? router.query.slug : undefined;
-  if (!slug) return null; // 路由参数未就绪时先不渲染
+function fmt(d?: string) {
+  if (!d) return "";
+  const dt = new Date(d);
+  return isNaN(dt.getTime())
+    ? d
+    : dt.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+}
 
-  const cs = caseStudies.find((item) => item.slug === slug);
+/** ---------- SSG for static export ---------- */
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = caseStudies
+    .filter((s: any) => !!s?.slug)
+    .map((s: any) => ({ params: { slug: s.slug as string } }));
+  return { paths, fallback: false };
+};
 
-  if (!cs) {
-    return (
-      <main style={{ maxWidth: 800, margin: "60px auto", padding: "0 16px" }}>
-        <p>Case not found.</p>
-        <Link href="/case-studies">← Back to Case Studies</Link>
-      </main>
-    );
-  }
+type Study = typeof caseStudies[number];
+
+export const getStaticProps: GetStaticProps<{ cs: Study }> = async (ctx) => {
+  const slug = ctx.params?.slug as string;
+  const cs = caseStudies.find((item: any) => item.slug === slug) ?? null;
+  if (!cs) return { notFound: true };
+  return { props: { cs } };
+};
+/** ----------------------------------------- */
+
+export default function CaseStudyDetail({ cs }: { cs: Study }) {
+  const tags: string[] = Array.isArray(cs?.tags) ? (cs.tags as any) : [];
+  const blocks: Block[] = Array.isArray(cs?.body) ? (cs.body as any) : [];
 
   return (
     <main style={{ maxWidth: 860, margin: "40px auto", padding: "0 16px" }}>
       <Link href="/case-studies" style={{ color: "#555" }}>← Back</Link>
 
       <h1 style={{ margin: "12px 0 6px" }}>{cs.title}</h1>
-      <p style={{ color: "#666", marginTop: 0 }}>{cs.caption}</p>
+      {cs.caption ? <p style={{ color: "#666", marginTop: 0 }}>{cs.caption}</p> : null}
 
       {/* 彩色标签 */}
-      {cs.tags?.length ? (
+      {tags.length ? (
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8, marginBottom: 8 }}>
-          {cs.tags.map((t) => (
+          {tags.map((t) => (
             <span
               key={t}
               style={{
@@ -107,7 +121,7 @@ export default function CaseStudyDetail() {
 
       {/* 正文：小标题/段落/图片动态渲染；图片默认缩窄并居中 */}
       <section>
-        {(cs.body as Block[]).map((block, i) => {
+        {blocks.map((block, i) => {
           if (block.type === "heading") {
             return (
               <h3 key={i} style={{ marginTop: 24, marginBottom: 8 }}>
@@ -149,8 +163,6 @@ export default function CaseStudyDetail() {
                       width: "100%",
                       height: "auto",
                       display: "block",
-                      // 如需限制超高竖图：取消下一行注释
-                      // maxHeight: "70vh",
                     }}
                   />
                 </div>
@@ -174,14 +186,4 @@ export default function CaseStudyDetail() {
       </section>
     </main>
   );
-
-  // --- 静态导出所需 ---
-import type { GetStaticPaths } from "next";
-import { caseStudies } from "../../data/caseStudies";
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = caseStudies.map((cs) => ({ params: { slug: cs.slug } }));
-  return { paths, fallback: false };
-};
-
 }

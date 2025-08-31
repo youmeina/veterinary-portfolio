@@ -73,7 +73,7 @@ function fmt(d: string) {
     : dt.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
 
-export default function BlogIndex(): JSX.Element {
+export default function BlogIndex() {
   const sorted = React.useMemo(
     () => [...blogPosts].sort((a, b) => (a.date < b.date ? 1 : -1)),
     []

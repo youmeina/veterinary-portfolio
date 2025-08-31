@@ -1,6 +1,6 @@
 // pages/blog/[slug].tsx
 import * as React from "react";
-import { useRouter } from "next/router";
+import type { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
 import { blogPosts } from "../../data/blogPosts";
 
@@ -68,21 +68,23 @@ function fmt(d: string) {
     : dt.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
 
-export default function BlogPostPage(): JSX.Element | null {
-  const router = useRouter();
-  const slug = typeof router.query.slug === "string" ? router.query.slug : "";
-  if (!slug) return null;
+/** ---------- SSG for static export ---------- */
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = blogPosts.map((p) => ({ params: { slug: p.slug } }));
+  return { paths, fallback: false };
+};
 
-  const post = blogPosts.find((p) => p.slug === slug);
-  if (!post) {
-    return (
-      <main style={{ maxWidth: 820, margin: "40px auto", padding: "0 16px" }}>
-        <p>Post not found.</p>
-        <Link href="/blog">← Back to Blog</Link>
-      </main>
-    );
-  }
+type Post = typeof blogPosts[number];
 
+export const getStaticProps: GetStaticProps<{ post: Post }> = async (ctx) => {
+  const slug = ctx.params?.slug as string;
+  const post = blogPosts.find((p) => p.slug === slug) || null;
+  if (!post) return { notFound: true };
+  return { props: { post } };
+};
+/** ----------------------------------------- */
+
+export default function BlogPostPage({ post }: { post: Post }) {
   return (
     <main style={{ maxWidth: 820, margin: "40px auto", padding: "0 16px" }}>
       <Link href="/blog" style={{ color: "#555" }}>← Back</Link>
@@ -116,7 +118,7 @@ export default function BlogPostPage(): JSX.Element | null {
           if (b.type === "list") {
             return (
               <ul key={i} style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7, color: "#222" }}>
-                {b.items.map((it, j) => <li key={j}>{it}</li>)}
+                {b.items.map((it: string, j: number) => <li key={j}>{it}</li>)}
               </ul>
             );
           }
@@ -125,14 +127,4 @@ export default function BlogPostPage(): JSX.Element | null {
       </article>
     </main>
   );
-
-  // --- 静态导出所需 ---
-import type { GetStaticPaths } from "next";
-import { blogPosts } from "../../data/blogPosts";
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = blogPosts.map((p) => ({ params: { slug: p.slug } }));
-  return { paths, fallback: false };
-};
-
 }

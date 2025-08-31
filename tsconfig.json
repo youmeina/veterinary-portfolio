@@ -1,28 +1,30 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES2020",
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "es2020"
     ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
+    "allowJs": true,
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true,
+    // 👇 关键：允许从项目根用非相对路径导入
+    "baseUrl": ".",
+    // 可选：给 @/ 起别名，后续更好管理
     "paths": {
       "@/*": [
         "*"
       ]
-    }
+    },
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",
