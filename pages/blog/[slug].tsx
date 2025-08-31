@@ -125,4 +125,14 @@ export default function BlogPostPage(): JSX.Element | null {
       </article>
     </main>
   );
+
+  // --- 静态导出所需 ---
+import type { GetStaticPaths } from "next";
+import { blogPosts } from "../../data/blogPosts";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = blogPosts.map((p) => ({ params: { slug: p.slug } }));
+  return { paths, fallback: false };
+};
+
 }

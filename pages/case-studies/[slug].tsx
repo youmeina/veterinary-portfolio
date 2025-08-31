@@ -174,4 +174,14 @@ export default function CaseStudyDetail() {
       </section>
     </main>
   );
+
+  // --- 静态导出所需 ---
+import type { GetStaticPaths } from "next";
+import { caseStudies } from "../../data/caseStudies";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = caseStudies.map((cs) => ({ params: { slug: cs.slug } }));
+  return { paths, fallback: false };
+};
+
 }
