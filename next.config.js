@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === 'production';
-const repo = 'veterinary-portfolio'; // 仓库名与 GitHub 完全一致
+const repo = 'youmeina-portfolio'; // 仓库名与 GitHub 完全一致
 
 module.exports = {
   output: 'export',                  // 使用静态导出
