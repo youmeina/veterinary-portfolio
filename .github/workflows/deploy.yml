@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+      
 
       # 有 package-lock.json 用 ci；没有就用 install，避免 10 秒就失败
       - name: Install dependencies
