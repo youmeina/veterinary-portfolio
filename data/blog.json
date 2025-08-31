@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "day-1-dr-positioning-notes",
+    "title": "Day 1 — DR Positioning Notes",
+    "date": "2025-08-31",
+    "tags": ["DR", "positioning", "learning"],
+    "excerpt": "First day working with DR. Focused on low-stress positioning, exposure checklist, and image quality notes…",
+    "content": [
+      "Focused on low-stress handling and clear positioning landmarks for thoracic DR. Practiced minimizing restraint while ensuring diagnostic value.",
+      "Kept an exposure checklist: PPE, collimation, marker placement, and lead protection. Noted common positioning pitfalls and how to fix them."
+    ]
+  },
+  {
+    "slug": "reflex-scores-after-ip",
+    "title": "Reflex Scores After IP Anesthesia",
+    "date": "2025-09-01",
+    "tags": ["lab", "anesthesia", "records"],
+    "excerpt": "Recorded righting and pedal withdrawal reflex after IP pentobarbital. Timing helped quantify onset and recovery…",
+    "content": [
+      "After IP anesthesia, I logged the disappearance and recovery of righting/pedal withdrawal reflex using a simple table.",
+      "Takeaway: consistent handling + the same assessor improves reliability of the scores."
+    ]
+  }
+]
