@@ -3,14 +3,18 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-const PROFILE_SRC = "/profile/meina.jpg"; // 请把图片放在 public/profile/meina.jpg
+// 自动根据环境加前缀：本地 ""，线上 "/veterinary-portfolio"
+const prefix = process.env.NEXT_PUBLIC_BASE_PATH || "";
+const asset = (p: string) => `${prefix}${p}`;
 
-// 生活照（把图片放到 public/profile/gallery/ 下）
+const PROFILE_SRC = asset("/profile/meina.jpg"); // public/profile/meina.jpg
+
+// 生活照（放到 public/profile/gallery/ 下）
 const LIFE_PHOTOS = [
-  { src: "/profile/gallery/life-1.jpg", alt: "Daily moment 1", note: "" },
-  { src: "/profile/gallery/life-2.jpg", alt: "Daily moment 2", note: "" },
-  { src: "/profile/gallery/life-3.jpg", alt: "Daily moment 3", note: "" },
-  { src: "/profile/gallery/life-4.jpg", alt: "Daily moment 4", note: "" },
+  { src: asset("/profile/gallery/life-1.jpg"), alt: "Daily moment 1", note: "" },
+  { src: asset("/profile/gallery/life-2.jpg"), alt: "Daily moment 2", note: "" },
+  { src: asset("/profile/gallery/life-3.jpg"), alt: "Daily moment 3", note: "" },
+  { src: asset("/profile/gallery/life-4.jpg"), alt: "Daily moment 4", note: "" },
 ];
 
 export default function About() {
@@ -37,7 +41,7 @@ export default function About() {
           </p>
         </div>
 
-        {/* 圆形头像（带细环） */}
+        {/* 圆形头像 */}
         <figure
           style={{
             margin: 0,
